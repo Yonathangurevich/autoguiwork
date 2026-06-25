@@ -9,28 +9,31 @@ pub enum MouseOptions {
     LeftClick,
     RightClick,
     Drag((u32, u32)),
+    DoubleClick,
 }
 
 impl PcParts for MouseOptions {
-    
     fn do_it(&self, gui: &mut RustAutoGui) -> Result<(), Box<dyn std::error::Error>> {
-        
         match self {
             MouseOptions::MoveTo(pos) => {
                 gui.move_mouse_to_pos(pos.0, pos.1, 1.0)?;
-            },
+            }
 
             MouseOptions::LeftClick => {
                 gui.left_click()?;
-            },
+            }
 
             MouseOptions::RightClick => {
                 gui.right_click()?;
-            },
+            }
 
             MouseOptions::Drag(pos) => {
                 gui.drag_mouse(pos.0 as i32, pos.1 as i32, 1.0)?;
-            }
+            },
+
+            MouseOptions::DoubleClick => {
+                gui.double_click()?;
+            },
         }
 
         Ok(())
@@ -39,26 +42,23 @@ impl PcParts for MouseOptions {
 
 pub enum KeyboardOptions {
     Input(String),
-    PressKey(Keys)
+    PressKey(Keys),
 }
 
 pub enum Keys {
     Enter,
     BackSpace,
     Space,
-    Shift
+    Shift,
 }
 
 impl PcParts for KeyboardOptions {
     fn do_it(&self, gui: &mut RustAutoGui) -> Result<(), Box<dyn std::error::Error>> {
-        
         match self {
             KeyboardOptions::Input(text) => {
                 gui.keyboard_input(text)?;
-            },
-            KeyboardOptions::PressKey(key) => {
-                gui.keyboard_command(key.to_str())?
             }
+            KeyboardOptions::PressKey(key) => gui.keyboard_command(key.to_str())?,
         }
 
         Ok(())
@@ -71,7 +71,7 @@ impl Keys {
             Keys::Enter => "enter",
             Keys::BackSpace => "backspace",
             Keys::Space => "space",
-            Keys::Shift => "shift"
+            Keys::Shift => "shift",
         }
     }
 }
