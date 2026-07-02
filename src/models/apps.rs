@@ -58,6 +58,7 @@ impl ExplorerTools {
             Self::MoveFile(paths) => {
                 let from = &paths.from;
                 let to = &paths.to;
+                // the "to" should already have the rename
                 fs::rename(from, to)
             }
         }
@@ -109,5 +110,32 @@ impl MoveFiles {
         let from = format!("{}\\{}", download_path_string, newest_file);
 
         Some(Self { from, to })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::models::apps::*;
+
+    #[test]
+    fn test_app_opening_with_explorer_path() -> Result<(), Box<dyn std::error::Error>> {
+        let path = "C:\\Users\\jonatan\\Documents\\Arduino";
+        assert!(
+            OpenApps::Explorer(path.to_string()).open().is_ok(),
+            "failed to open explorer"
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn test_find_last_download_and_move_to() {
+        let path = "C:\\Users\\jonatan\\Documents\\Arduino\\testSheet.xlsx".to_string();
+        if let Some(last) = MoveFiles::find_last_downloaded(path) {
+            if let Ok(_) = ExplorerTools::MoveFile(last).run() {
+                println!("done go look");
+            } else {
+                println!("failed");
+            }
+        }
     }
 }
