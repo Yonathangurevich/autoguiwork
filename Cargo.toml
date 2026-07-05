@@ -8,6 +8,7 @@ rustautogui = "2.5.0"
 msgbox = "0.7.0"
 dirs = "6.0.0"
 chrono = "0.4.45"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"] }
 
 [[bin]]
 name = "autoWork"
