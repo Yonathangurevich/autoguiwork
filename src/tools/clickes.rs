@@ -50,6 +50,7 @@ pub enum Keys {
     BackSpace,
     Space,
     Shift,
+    LeftArrow,
 }
 
 impl PcParts for KeyboardOptions {
@@ -65,6 +66,30 @@ impl PcParts for KeyboardOptions {
     }
 }
 
+impl KeyboardOptions {
+    pub fn do_it_for(&self, gui: &mut RustAutoGui, times: u32) -> Result<(), Box<dyn std::error::Error>> {
+        
+        match self {
+            KeyboardOptions::Input(text) => {
+                for _ in 0..times {
+                    gui.keyboard_input(text)?
+                }
+            },
+            KeyboardOptions::PressKey(key) => {
+                for _ in 0..times {
+                    gui.keyboard_command(key.to_str())?
+                }
+            },
+        }
+        
+        
+        for _ in 0..times {
+        }
+
+        Ok(())
+    }
+}
+
 impl Keys {
     fn to_str(&self) -> &str {
         match self {
@@ -72,6 +97,7 @@ impl Keys {
             Keys::BackSpace => "backspace",
             Keys::Space => "space",
             Keys::Shift => "shift",
+            Keys::LeftArrow => "left",
         }
     }
 }

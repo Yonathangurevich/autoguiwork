@@ -38,6 +38,10 @@ pub fn sleep_for(secs: u64) {
     std::thread::sleep(Duration::from_secs(secs));
 }
 
+pub fn sleep_for_f64(secs: f64) {
+    std::thread::sleep(Duration::from_secs_f64(secs));
+}
+
 pub fn find_image_loop(
     template_path: &str,
     gui: &mut RustAutoGui,

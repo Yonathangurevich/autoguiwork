@@ -29,7 +29,7 @@ impl Step {
 }
 
 // let new step = Step::new();
-// step.add_image("blah");
+// step.add_image("blah.png");
 // step.add_action(MouseOptions::MoveTo(step.image_locatian));
 // step.add_action(MouseOptions::LeftClick);
 // step.execute();

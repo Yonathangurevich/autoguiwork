@@ -6,6 +6,7 @@ pub enum OpenApps {
     Outlook,
     Google(Googles),
     Explorer(String),
+    RandomApp(String)
 }
 
 pub enum Googles {
@@ -29,7 +30,12 @@ impl OpenApps {
             }
             OpenApps::Explorer(path) => {
                 Command::new("explorer").arg(path).spawn()?;
-            }
+            },
+            OpenApps::RandomApp(app) => {
+                Command::new("cmd")
+                    .args(["/C", "start", "", app])
+                    .spawn()?;
+            },
         };
 
         Ok(())
@@ -137,5 +143,13 @@ mod tests {
                 println!("failed");
             }
         }
+    }
+
+    #[test]
+    fn test_random_app_opening() {
+        let random_link = "priority:priform@CINVOICES::.:tabula.ini:1".to_string();
+        let _another_link = "priority:priform@AINVOICES::.:tabula.ini:1".to_string();
+        let _ = OpenApps::RandomApp(random_link).open().unwrap();
+
     }
 }
