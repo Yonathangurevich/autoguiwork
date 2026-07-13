@@ -81,10 +81,6 @@ impl KeyboardOptions {
                 }
             },
         }
-        
-        
-        for _ in 0..times {
-        }
 
         Ok(())
     }

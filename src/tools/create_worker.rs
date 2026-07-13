@@ -17,7 +17,7 @@ impl WorkerJob {
 
 pub async fn runit() {
     
-    let (tx, mut rx) = mpsc::channel(1); 
+    let (tx, mut rx) = mpsc::channel(1);
     
     let (os_tx, os_rx) = oneshot::channel::<String>();
 

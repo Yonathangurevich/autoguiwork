@@ -2,6 +2,8 @@ use std::fs;
 use std::process::Command;
 extern crate dirs;
 
+// -- fucntions for opening apps.
+
 pub enum OpenApps {
     Outlook,
     Google(Googles),
@@ -71,7 +73,7 @@ impl ExplorerTools {
     }
 }
 
-// ----
+// ---- functions for using the fileSystem (finding last downlaod file in the donwloads)
 
 #[derive(Debug)]
 pub struct MoveFiles {
