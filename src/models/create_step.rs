@@ -5,14 +5,18 @@ use crate::tools::{clickes::PcParts, find_image::find_image_loop};
 pub struct Step {
     pub position: u32,
     pub image: String,
-    pub image_location: (u32, u32), 
+    pub image_location: (u32, u32),
     pub actions: Vec<Box<dyn PcParts>>,
 }
 
 impl Step {
-    
     pub fn new() -> Self {
-        Self { position: 0, image: String::new(), image_location: (0,0), actions: vec![] }
+        Self {
+            position: 0,
+            image: String::new(),
+            image_location: (0, 0),
+            actions: vec![],
+        }
     }
 
     pub fn add_image(&mut self, image: &str, gui: &mut RustAutoGui) {

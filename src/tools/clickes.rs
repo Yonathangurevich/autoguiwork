@@ -1,7 +1,7 @@
 use rustautogui::RustAutoGui;
 
 pub trait PcParts {
-    fn do_it(&self, gui: &mut RustAutoGui) -> Result<(), Box<dyn std::error::Error>>;
+    fn do_it(&self, gui: &mut RustAutoGui) -> Result<(), rustautogui::errors::AutoGuiError>;
 }
 
 pub enum MouseOptions {
@@ -13,7 +13,7 @@ pub enum MouseOptions {
 }
 
 impl PcParts for MouseOptions {
-    fn do_it(&self, gui: &mut RustAutoGui) -> Result<(), Box<dyn std::error::Error>> {
+    fn do_it(&self, gui: &mut RustAutoGui) -> Result<(), rustautogui::errors::AutoGuiError> {
         match self {
             MouseOptions::MoveTo(pos, speed) => {
                 gui.move_mouse_to_pos(pos.0, pos.1, *speed)?;
@@ -54,7 +54,7 @@ pub enum Keys {
 }
 
 impl PcParts for KeyboardOptions {
-    fn do_it(&self, gui: &mut RustAutoGui) -> Result<(), Box<dyn std::error::Error>> {
+    fn do_it(&self, gui: &mut RustAutoGui) -> Result<(), rustautogui::errors::AutoGuiError> {
         match self {
             KeyboardOptions::Input(text) => {
                 gui.keyboard_input(text)?;
@@ -67,19 +67,22 @@ impl PcParts for KeyboardOptions {
 }
 
 impl KeyboardOptions {
-    pub fn do_it_for(&self, gui: &mut RustAutoGui, times: u32) -> Result<(), Box<dyn std::error::Error>> {
-        
+    pub fn do_it_for(
+        &self,
+        gui: &mut RustAutoGui,
+        times: u32,
+    ) -> Result<(), Box<dyn std::error::Error>> {
         match self {
             KeyboardOptions::Input(text) => {
                 for _ in 0..times {
                     gui.keyboard_input(text)?
                 }
-            },
+            }
             KeyboardOptions::PressKey(key) => {
                 for _ in 0..times {
                     gui.keyboard_command(key.to_str())?
                 }
-            },
+            }
         }
 
         Ok(())

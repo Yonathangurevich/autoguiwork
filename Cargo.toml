@@ -9,6 +9,7 @@ msgbox = "0.7.0"
 dirs = "6.0.0"
 chrono = "0.4.45"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"] }
+thiserror = "2"
 
 [[bin]]
 name = "autoWork"

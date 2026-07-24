@@ -2,7 +2,6 @@
 
 use autoguiwork::{
     models::apps::{
-        ExplorerTools::{self},
         Googles::Search,
         MoveFiles, OpenApps,
     },
@@ -71,9 +70,8 @@ fn kobi_container_auto(gui: &mut RustAutoGui) -> Result<(), Box<dyn std::error::
         "C:\\Users\\andrey\\קונטיינר 2026\\קונטיינר גיבוי\\{}",
         file_name
     );
-    if let Some(last) = MoveFiles::find_last_downloaded(path) {
-        ExplorerTools::MoveFile(last).run()?;
-    }
+    
+    MoveFiles::move_last_download_to(path)?;
 
     find_image_loop_and_move_left_click("./assets/kobiFile.jpeg", gui)?;
     find_image_loop_and_move_left_click("./assets/kobiImport.jpeg", gui)?;
