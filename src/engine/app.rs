@@ -1,9 +1,10 @@
 use rustautogui::RustAutoGui;
+use crate::engine::context::{Context, Value};
 use crate::models::apps::{MoveFiles, OpenApps};
 use crate::models::engine_error::{EngineError, EngineErrorKind};
 use crate::tools::clickes::{KeyboardOptions, MouseOptions, PcParts};
 use crate::tools::find_image::{find_image_loop, sleep_for_f64};
-use crate::tools::find_window_title::is_window_open;
+use crate::tools::find_window_title::wait_for_new_window;
 
 pub struct Actions {
     pub action_index: u32,
@@ -25,40 +26,38 @@ pub enum ActionsKind {
     Mouse(MouseOptions),
     Keyboard(KeyboardOptions),
     Open(OpenApps),
-    MoveLastDownload { to: String },
+    MoveLastDownload { to: String, waited_ms: f64 },
     WaitForWindow { title: String, waited_ms: f64 },
-    FindImageLoop { image_path: String, waited_ms: f64 },
+    // store_as: the variable name where the found position is saved, so a later
+    // Mouse(MoveTo(Var(store_as))) can click exactly where this image was found.
+    FindImageLoop { image_path: String, waited_ms: f64, store_as: String },
     Sleep(f64),
 }
 
 impl ActionsKind {
-    pub fn run(&self, gui: &mut RustAutoGui) -> Result<(), EngineErrorKind> {
+    pub fn run(&self, gui: &mut RustAutoGui, ctx: &mut Context) -> Result<(), EngineErrorKind> {
         match self {
-            ActionsKind::Mouse(m) => m.do_it(gui)?,
-            ActionsKind::Keyboard(k) => k.do_it(gui)?,
+            ActionsKind::Mouse(m) => m.do_it(gui, ctx)?,
+            ActionsKind::Keyboard(k) => k.do_it(gui, ctx)?,
             ActionsKind::Open(app) => app.open()?,
-            ActionsKind::MoveLastDownload { to } => {
-                MoveFiles::move_last_download_to(to.clone())?
+            ActionsKind::MoveLastDownload { to, waited_ms } => {
+                MoveFiles::move_last_download_to(to.clone(), *waited_ms)?
             }
-            ActionsKind::WaitForWindow { title , waited_ms} => {
-                let mut max = *waited_ms;
-                while !is_window_open(title) {
-                    if max <= 0.0 {
-                        EngineErrorKind::WindowNotFound {
-                            title: title.clone(),
-                            waited_ms: max,
-                        };
-                        break;
+            ActionsKind::WaitForWindow { title, waited_ms } => {
+                // The waiter now owns the loop, the timeout, AND returning the
+                // error via `?` — so a timeout actually fails the action instead
+                // of silently reporting success like the old version did.
+                wait_for_new_window(title, *waited_ms)?;
+            }
+            ActionsKind::FindImageLoop { image_path, waited_ms, store_as } => {
+                let (x, y) = find_image_loop(image_path, gui).map_err(|_| {
+                    EngineErrorKind::ImageNotFound {
+                        path: image_path.clone(),
+                        waited_ms: *waited_ms,
                     }
-                    sleep_for_f64(0.2);
-                    max -= 0.2;
-                }
-            }
-            ActionsKind::FindImageLoop { image_path, waited_ms } => {
-                find_image_loop(image_path, gui).map_err(|_| EngineErrorKind::ImageNotFound {
-                    path: image_path.clone(),
-                    waited_ms: *waited_ms,
                 })?;
+                // Hand the found position to later actions through the context.
+                ctx.set(store_as, Value::Pos(x, y));
             }
             ActionsKind::Sleep(sec) => sleep_for_f64(*sec),
         };
@@ -69,13 +68,13 @@ impl ActionsKind {
 impl std::fmt::Display for ActionsKind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let name = match self {
-            ActionsKind::Mouse(_) => format!("Mouse"),
-            ActionsKind::Keyboard(_) => format!("Keyboard"),
-            ActionsKind::Open(o) => format!("Open - {}", o.to_string()),
-            ActionsKind::MoveLastDownload { to } => format!("MoveLastDownload to {to}"),
+            ActionsKind::Mouse(_) => "Mouse".to_string(),
+            ActionsKind::Keyboard(_) => "Keyboard".to_string(),
+            ActionsKind::Open(o) => format!("Open - {}", o),
+            ActionsKind::MoveLastDownload { to, waited_ms } => format!("MoveLastDownload to {to} (timeout {waited_ms}ms)"),
             ActionsKind::WaitForWindow { title , waited_ms} => format!("WaitForWindow: {title} for {waited_ms}"),
-            ActionsKind::FindImageLoop { image_path , waited_ms} => format!("FindImageLoop: {image_path} for {waited_ms}"),
-            ActionsKind::Sleep(_) => format!("Sleep"),
+            ActionsKind::FindImageLoop { image_path, waited_ms, store_as } => format!("FindImageLoop: {image_path} for {waited_ms} -> {store_as}"),
+            ActionsKind::Sleep(_) => "Sleep".to_string(),
         };
 
         write!(f, "{}", name)
@@ -102,9 +101,14 @@ impl App {
     }
 
     pub fn execute(&self, gui: &mut RustAutoGui) -> Result<(), EngineError> {
+        // One fresh Context per run — holds the positions/values that actions
+        // discover and share. Dropped when the run ends, so nothing leaks
+        // between separate executions of the automation.
+        let mut ctx = Context::new();
+
         let actions = &self.actions;
         for action in actions {
-            action.action.run(gui).map_err(|e| EngineError {
+            action.action.run(gui, &mut ctx).map_err(|e| EngineError {
                 action_index: action.action_index,
                 action_name: action.action_name.clone(),
                 kind: e,

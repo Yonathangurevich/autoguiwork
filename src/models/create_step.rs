@@ -9,6 +9,12 @@ pub struct Step {
     pub actions: Vec<Box<dyn PcParts>>,
 }
 
+impl Default for Step {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Step {
     pub fn new() -> Self {
         Self {

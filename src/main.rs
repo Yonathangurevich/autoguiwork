@@ -1,26 +1,37 @@
 #![windows_subsystem = "windows"]
 
 use autoguiwork::{
-    models::apps::{
+    engine::app::{ActionsKind, App}, models::{apps::{
         Googles::Search,
         MoveFiles, OpenApps,
-    },
-    tools::{
-        clickes::{KeyboardOptions, MouseOptions, PcParts},
-        file_naming::create_naming_by_time,
-        find_image::{find_image_loop, find_image_loop_and_move_left_click},
-        message_box::message,
+    }, engine_error::EngineErrorKind}, tools::{
+        clickes::{KeyboardOptions, MouseOptions, PcParts}, file_naming::create_naming_by_time, find_image::find_image_loop, message_box::message,
     },
 };
 use rustautogui::RustAutoGui;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut gui = rustautogui::RustAutoGui::new(false)?;
-    kobi_container_auto(&mut gui)?;
+    test_auto()?;
     Ok(())
 }
 
-fn kobi_container_auto(gui: &mut RustAutoGui) -> Result<(), Box<dyn std::error::Error>> {
+fn test_auto() -> Result<(), EngineErrorKind> {
+    
+    let mut app = App::new("test".to_string());
+        
+    app.add_action(ActionsKind::FindImageLoop { 
+        image_path: "assets/first.jpeg".to_string(), 
+        waited_ms: 10.0, 
+        store_as: "firstImage".to_string() 
+    });
+    
+    
+    
+    Ok(())
+}
+
+/* fn kobi_container_auto(gui: &mut RustAutoGui) -> Result<(), Box<dyn std::error::Error>> {
     // first he open the outlook and search to open the excel file and runs the macro
     // after he done with the macro he needs to save the file and name it
     message("move the window to the center")?;
@@ -56,12 +67,12 @@ fn kobi_container_auto(gui: &mut RustAutoGui) -> Result<(), Box<dyn std::error::
 
     message("center")?;
 
-    find_image_loop_and_move_left_click("./assets/kobiFile.jpeg", gui)?;
+    // find_image_loop_and_move_left_click("./assets/kobiFile.jpeg", gui)?;
 
     let download_location = find_image_loop("./assets/kobiDownload.jpeg", gui)?;
     MouseOptions::MoveTo(download_location, 0.1).do_it(gui)?;
 
-    find_image_loop_and_move_left_click("./assets/kobiToDownload.jpeg", gui)?;
+    // find_image_loop_and_move_left_click("./assets/kobiToDownload.jpeg", gui)?;
 
     message("לחכות לסיום ההורדה")?;
 
@@ -73,11 +84,12 @@ fn kobi_container_auto(gui: &mut RustAutoGui) -> Result<(), Box<dyn std::error::
     
     MoveFiles::move_last_download_to(path)?;
 
-    find_image_loop_and_move_left_click("./assets/kobiFile.jpeg", gui)?;
-    find_image_loop_and_move_left_click("./assets/kobiImport.jpeg", gui)?;
-    find_image_loop_and_move_left_click("./assets/kobiUpload.jpeg", gui)?;
+    // find_image_loop_and_move_left_click("./assets/kobiFile.jpeg", gui)?;
+    // find_image_loop_and_move_left_click("./assets/kobiImport.jpeg", gui)?;
+    // find_image_loop_and_move_left_click("./assets/kobiUpload.jpeg", gui)?;
 
     OpenApps::Explorer("C:\\Users\\andrey\\קונטיינר 2026".to_string());
 
     Ok(())
 }
+*/

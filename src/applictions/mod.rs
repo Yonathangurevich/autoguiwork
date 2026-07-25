@@ -3,6 +3,7 @@ use std::error;
 use rustautogui::RustAutoGui;
 
 use crate::{
+    engine::context::Context,
     models::apps::OpenApps,
     tools::{
         clickes::{KeyboardOptions, Keys, PcParts},
@@ -24,8 +25,9 @@ pub fn invoics_app(
             sleep_for_f64(0.2);
         }
 
+        let ctx = Context::new();
         for _ in 0..4 {
-            KeyboardOptions::PressKey(Keys::LeftArrow).do_it(gui)?;
+            KeyboardOptions::PressKey(Keys::LeftArrow).do_it(gui, &ctx)?;
         }
 
         Ok("opne".to_string())

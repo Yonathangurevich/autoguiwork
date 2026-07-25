@@ -42,6 +42,9 @@ pub enum EngineErrorKind {
     #[error("no files found in the Downloads folder")]
     DownloadsEmpty,
 
+    #[error("a download did not finish within {waited_ms}ms (newest file: '{newest}')")]
+    DownloadTimedOut { newest: String, waited_ms: f64 },
+
     #[error("could not locate the Downloads folder on this system")]
     DownloadsFolderUnavailable,
 

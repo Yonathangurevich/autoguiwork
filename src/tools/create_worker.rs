@@ -25,9 +25,8 @@ pub async fn runit() {
 
     tokio::spawn(async move {
         let job = WorkerJob::new("I260014134".to_string(), os_tx);
-        if let Err(_) = tx.send(job).await {
+        if tx.send(job).await.is_err() {
             println!("receiver dropped");
-            return;
         }
     });
 
