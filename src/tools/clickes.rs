@@ -1,4 +1,5 @@
 use rustautogui::RustAutoGui;
+use serde::{Deserialize, Serialize};
 
 use crate::engine::context::{Context, PosArg};
 use crate::models::engine_error::EngineErrorKind;
@@ -7,6 +8,7 @@ pub trait PcParts {
     fn do_it(&self, gui: &mut RustAutoGui, ctx: &Context) -> Result<(), EngineErrorKind>;
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub enum MouseOptions {
     // MoveTo/Drag now take a PosArg: either a literal (x, y) the user typed,
     // or Var("name") meaning "wherever a previous action stored that position".
@@ -49,11 +51,13 @@ impl PcParts for MouseOptions {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub enum KeyboardOptions {
     Input(String),
     PressKey(Keys),
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub enum Keys {
     Enter,
     BackSpace,

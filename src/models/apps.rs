@@ -2,6 +2,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+use serde::{Deserialize, Serialize};
+
 use crate::models::engine_error::EngineErrorKind::{self, DownloadsFolderUnavailable};
 use crate::tools::find_image::sleep_for_f64;
 extern crate dirs;
@@ -12,7 +14,7 @@ const IN_PROGRESS_EXTENSIONS: [&str; 3] = ["crdownload", "part", "tmp"];
 
 // -- fucntions for opening apps.
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum OpenApps {
     Outlook,
     Google(Googles),
@@ -20,7 +22,7 @@ pub enum OpenApps {
     RandomApp(String),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum Googles {
     Drive,
     Chrome,
@@ -261,6 +263,6 @@ mod tests {
     fn test_random_app_opening() {
         let random_link = "priority:priform@CINVOICES::.:tabula.ini:1".to_string();
         let _another_link = "priority:priform@AINVOICES::.:tabula.ini:1".to_string();
-        let _ = OpenApps::RandomApp(random_link).open().unwrap();
+        OpenApps::RandomApp(random_link).open().unwrap();
     }
 }

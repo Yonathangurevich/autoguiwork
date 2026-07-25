@@ -60,6 +60,26 @@ pub enum EngineErrorKind {
 
     #[error("execution was cancelled by user")]
     Cancelled,
+
+    #[error("could not read or write automation file '{path}': {source}")]
+    AppFileIo {
+        path: String,
+        #[source]
+        source: std::io::Error,
+    },
+
+    #[error("automation file '{path}' is not valid JSON: {source}")]
+    AppFileParse {
+        path: String,
+        #[source]
+        source: serde_json::Error,
+    },
+
+    #[error("could not locate the app-data folder on this system")]
+    DataFolderUnavailable,
+
+    #[error("pasted image data could not be decoded as an image: {0}")]
+    InvalidImageData(String),
 }
 
 #[derive(Debug)]
