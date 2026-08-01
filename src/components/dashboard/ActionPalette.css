@@ -1,0 +1,33 @@
+.palette {
+  width: 220px;
+  border-left: 1px solid #2a2a33;
+  padding: 1rem 0.75rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.palette-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9a9aa2;
+}
+
+.palette-item {
+  text-align: left;
+  padding: 0.55rem 0.7rem;
+  background: #23232a;
+  color: #e8e8ea;
+  border: 1px solid #33333c;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.palette-item:hover {
+  border-color: #5b7cfa;
+  background: #2a2a33;
+}

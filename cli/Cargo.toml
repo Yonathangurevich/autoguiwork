@@ -1,0 +1,14 @@
+[package]
+name = "autoguiwork-cli"
+version = "0.1.0"
+edition = "2024"
+
+# The headless CLI: `autoWork run <name>`, `list`, `serve`.
+[[bin]]
+name = "autoWork"
+path = "src/main.rs"
+
+[dependencies]
+autoguiwork = { package = "autoguiwork-core", path = "../core" }
+rustautogui = { workspace = true }
+tokio = { workspace = true }

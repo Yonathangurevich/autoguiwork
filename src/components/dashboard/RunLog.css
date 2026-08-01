@@ -1,0 +1,103 @@
+.runlog {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  width: 340px;
+  max-height: 60vh;
+  overflow-y: auto;
+  background: #1b1b20;
+  border: 1px solid #33333c;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  padding: 0.75rem 0.9rem;
+}
+
+.runlog-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.runlog-title {
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9a9aa2;
+}
+
+.runlog-close {
+  background: none;
+  border: none;
+  color: #9a9aa2;
+  font-size: 1.2rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.runlog-close:hover {
+  color: #e8e8ea;
+}
+
+.runlog-running {
+  color: #f0c674;
+  margin: 0.25rem 0;
+}
+
+.runlog-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.runlog-row {
+  display: grid;
+  grid-template-columns: 1.4rem 1fr auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.runlog-idx {
+  color: #9a9aa2;
+}
+
+.runlog-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.runlog-ms {
+  color: #9a9aa2;
+  font-variant-numeric: tabular-nums;
+}
+
+.runlog-status.ok {
+  color: #6fcf7f;
+}
+.runlog-status.failed {
+  color: #ff6b6b;
+}
+.runlog-status.skipped {
+  color: #9a9aa2;
+}
+
+.runlog-outcome {
+  margin: 0.6rem 0 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid #2a2a33;
+  font-weight: 600;
+}
+.runlog-outcome.ok {
+  color: #6fcf7f;
+}
+.runlog-outcome.failed {
+  color: #ff6b6b;
+}
+.runlog-outcome.skipped {
+  color: #f0c674;
+}

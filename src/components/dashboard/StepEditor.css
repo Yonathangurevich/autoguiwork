@@ -1,0 +1,45 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.7rem;
+}
+
+.field > span {
+  font-size: 0.8rem;
+  color: #9a9aa2;
+}
+
+.field input,
+.field select {
+  padding: 0.45rem 0.6rem;
+  background: #1b1b20;
+  color: #e8e8ea;
+  border: 1px solid #33333c;
+  border-radius: 7px;
+  font: inherit;
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: #5b7cfa;
+}
+
+.textarg {
+  display: flex;
+  gap: 0.5rem;
+}
+.textarg select {
+  flex-shrink: 0;
+}
+.textarg input {
+  flex: 1;
+}
+
+.hint {
+  margin: 0.7rem 0 0;
+  font-size: 0.8rem;
+  color: #9a9aa2;
+  font-style: italic;
+}
