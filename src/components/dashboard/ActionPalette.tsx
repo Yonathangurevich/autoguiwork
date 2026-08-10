@@ -19,8 +19,14 @@ const ITEMS: PaletteItem[] = [
   { label: "Move to", make: () => ({ Mouse: { MoveTo: [{ Var: "found" }, 0.2] } }) },
   { label: "Left click", make: () => ({ Mouse: "LeftClick" }) },
   { label: "Double click", make: () => ({ Mouse: "DoubleClick" }) },
-  { label: "Type text", make: () => ({ Keyboard: { Input: { Literal: "" } } }) },
-  { label: "Press Enter", make: () => ({ Keyboard: { PressKey: "Enter" } }) },
+  {
+    label: "Type text",
+    make: () => ({ Keyboard: { opts: { Input: { Literal: "" } }, repeat: 1 } }),
+  },
+  {
+    label: "Press key",
+    make: () => ({ Keyboard: { opts: { PressKey: "Enter" }, repeat: 1 } }),
+  },
   {
     label: "Wait for window",
     make: () => ({ WaitForWindow: { title: { Literal: "" }, waited_ms: 15000 } }),

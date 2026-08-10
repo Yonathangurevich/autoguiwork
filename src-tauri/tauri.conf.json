@@ -14,7 +14,8 @@
       {
         "title": "autoguiwork",
         "width": 900,
-        "height": 640
+        "height": 640,
+        "dragDropEnabled": false
       }
     ],
     "security": {

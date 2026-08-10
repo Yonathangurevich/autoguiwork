@@ -294,7 +294,20 @@ function KeyboardEditor({
   onChange: (v: KeyboardOptions) => void;
 }) {
   const isInput = "Input" in value;
-  const KEYS: Key[] = ["Enter", "BackSpace", "Space", "Shift", "LeftArrow"];
+  // Grouped so the dropdown is navigable with 40+ keys.
+  const KEY_GROUPS: { label: string; keys: Key[] }[] = [
+    { label: "common", keys: ["Enter", "BackSpace", "Space", "Tab", "Escape", "Delete", "Insert"] },
+    { label: "arrows", keys: ["LeftArrow", "RightArrow", "UpArrow", "DownArrow"] },
+    { label: "navigation", keys: ["Home", "End", "PageUp", "PageDown"] },
+    { label: "modifiers", keys: ["Shift", "Ctrl", "Alt", "Win"] },
+    {
+      label: "function",
+      keys: [
+        "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+        "F13", "F14", "F15", "F16", "F17", "F18", "F19", "F20", "F21", "F22", "F23", "F24",
+      ],
+    },
+  ];
 
   return (
     <>
@@ -331,10 +344,14 @@ function KeyboardEditor({
             value={value.PressKey}
             onChange={(e) => onChange({ PressKey: e.target.value as Key })}
           >
-            {KEYS.map((k) => (
-              <option key={k} value={k}>
-                {k}
-              </option>
+            {KEY_GROUPS.map((g) => (
+              <optgroup key={g.label} label={g.label}>
+                {g.keys.map((k) => (
+                  <option key={k} value={k}>
+                    {k}
+                  </option>
+                ))}
+              </optgroup>
             ))}
           </select>
         </label>
@@ -361,12 +378,22 @@ export function StepEditor({ action, onChange, appName, stepIndex, args }: Props
     );
   }
   if ("Keyboard" in action) {
+    const kb = action.Keyboard;
     return (
-      <KeyboardEditor
-        value={action.Keyboard}
-        args={args}
-        onChange={(v) => onChange({ Keyboard: v })}
-      />
+      <>
+        <KeyboardEditor
+          value={kb.opts}
+          args={args}
+          onChange={(v) => onChange({ Keyboard: { ...kb, opts: v } })}
+        />
+        <NumberField
+          label="repeat (times)"
+          value={kb.repeat}
+          onChange={(v) =>
+            onChange({ Keyboard: { ...kb, repeat: Math.max(1, Math.floor(v)) } })
+          }
+        />
+      </>
     );
   }
   if ("Sleep" in action) {

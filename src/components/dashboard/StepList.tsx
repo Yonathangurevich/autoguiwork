@@ -18,9 +18,10 @@ function describe(action: ActionsKind): string {
     return "Mouse";
   }
   if ("Keyboard" in action) {
-    const k = action.Keyboard;
-    if ("Input" in k) return "Keyboard: Type text";
-    if ("PressKey" in k) return `Keyboard: Press ${k.PressKey}`;
+    const { opts, repeat } = action.Keyboard;
+    const rep = repeat > 1 ? ` ×${repeat}` : "";
+    if ("Input" in opts) return `Keyboard: Type text${rep}`;
+    if ("PressKey" in opts) return `Keyboard: Press ${opts.PressKey}${rep}`;
     return "Keyboard";
   }
   if ("Open" in action) {
@@ -48,11 +49,28 @@ interface Props {
   actions: Action[];
   onRemove: (index: number) => void;
   onUpdate: (index: number, action: ActionsKind) => void;
+  onMove: (from: number, to: number) => void;
 }
 
-export function StepList({ appName, args, actions, onRemove, onUpdate }: Props) {
+export function StepList({
+  appName,
+  args,
+  actions,
+  onRemove,
+  onUpdate,
+  onMove,
+}: Props) {
   // Which step is expanded for editing (only one at a time).
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  // Drag-and-drop reorder state: the index being dragged, and the drop target.
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [overIndex, setOverIndex] = useState<number | null>(null);
+
+  function handleDrop(target: number) {
+    if (dragIndex !== null) onMove(dragIndex, target);
+    setDragIndex(null);
+    setOverIndex(null);
+  }
 
   return (
     <div className="steps">
@@ -65,8 +83,41 @@ export function StepList({ appName, args, actions, onRemove, onUpdate }: Props) 
       {actions.map((step, i) => {
         const isOpen = openIndex === i;
         return (
-          <div className={`step ${isOpen ? "open" : ""}`} key={i}>
+          <div
+            className={`step ${isOpen ? "open" : ""} ${
+              overIndex === i && dragIndex !== i ? "drag-over" : ""
+            }`}
+            key={i}
+            // Only draggable when collapsed, so editing an open step's inputs
+            // (selecting text, etc.) isn't hijacked by drag.
+            draggable={!isOpen}
+            onDragStart={(e) => {
+              setDragIndex(i);
+              // WebView2 (Tauri on Windows) shows a "no-drop" cursor unless the
+              // drag carries data + an explicit move effect.
+              e.dataTransfer.effectAllowed = "move";
+              e.dataTransfer.setData("text/plain", String(i));
+            }}
+            onDragOver={(e) => {
+              // preventDefault marks this element as a valid drop target;
+              // dropEffect "move" gives the move cursor instead of the red X.
+              e.preventDefault();
+              e.dataTransfer.dropEffect = "move";
+              setOverIndex(i);
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              handleDrop(i);
+            }}
+            onDragEnd={() => {
+              setDragIndex(null);
+              setOverIndex(null);
+            }}
+          >
             <div className="step-head">
+              <span className="drag-handle" title="drag to reorder">
+                ⋮⋮
+              </span>
               <span className="step-index">{i + 1}</span>
               <button
                 className="step-label"

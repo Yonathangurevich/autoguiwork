@@ -81,6 +81,15 @@ export function Dashboard() {
     });
   }
 
+  // Reorder: move the step at `from` to position `to` (drag-and-drop).
+  function moveStep(from: number, to: number) {
+    if (!app || from === to) return;
+    const actions = [...app.actions];
+    const [moved] = actions.splice(from, 1);
+    actions.splice(to, 0, moved);
+    persist({ ...app, actions });
+  }
+
   if (error) return <p className="error">error: {error}</p>;
   if (!app) return <p>loading…</p>;
 
@@ -140,6 +149,7 @@ export function Dashboard() {
           actions={app.actions}
           onRemove={removeStep}
           onUpdate={updateStep}
+          onMove={moveStep}
         />
 
         {/* right nav: pick an action to add as a step */}

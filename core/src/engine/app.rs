@@ -41,10 +41,21 @@ impl Actions {
     }
 }
 
+// Default repeat count for keyboard steps (serde needs a fn for default value).
+fn one() -> u32 {
+    1
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub enum ActionsKind {
     Mouse(MouseOptions),
-    Keyboard(KeyboardOptions),
+    // Keyboard can repeat X times (e.g. press LeftArrow 6 times) via one step.
+    // repeat defaults to 1 so older JSON (Keyboard as a plain value) still loads.
+    Keyboard {
+        opts: KeyboardOptions,
+        #[serde(default = "one")]
+        repeat: u32,
+    },
     Open(OpenApps),
     // `to` and `title` are TextArg so a destination path / window title can come
     // from the caller's args.
@@ -74,7 +85,7 @@ impl ActionsKind {
     ) -> Result<(), EngineErrorKind> {
         match self {
             ActionsKind::Mouse(m) => m.do_it(gui, ctx)?,
-            ActionsKind::Keyboard(k) => k.do_it(gui, ctx)?,
+            ActionsKind::Keyboard { opts, repeat } => opts.do_it_for(gui, ctx, *repeat)?,
             ActionsKind::Open(app) => app.open(ctx)?,
             ActionsKind::MoveLastDownload { to, waited_ms } => {
                 let to = to.resolve(ctx)?;
@@ -128,7 +139,10 @@ impl std::fmt::Display for ActionsKind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let name = match self {
             ActionsKind::Mouse(_) => "Mouse".to_string(),
-            ActionsKind::Keyboard(_) => "Keyboard".to_string(),
+            ActionsKind::Keyboard { repeat, .. } if *repeat > 1 => {
+                format!("Keyboard (x{repeat})")
+            }
+            ActionsKind::Keyboard { .. } => "Keyboard".to_string(),
             ActionsKind::Open(o) => format!("Open - {}", o),
             ActionsKind::MoveLastDownload { to, waited_ms } => format!("MoveLastDownload to {to} (timeout {waited_ms}ms)"),
             ActionsKind::WaitForWindow { title , waited_ms} => format!("WaitForWindow: {title} for {waited_ms}"),

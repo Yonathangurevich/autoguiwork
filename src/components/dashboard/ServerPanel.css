@@ -1,5 +1,17 @@
 .server-panel {
-  border-bottom: 1px solid #2a2a33;
+  /* Float as a right-side drawer so it overlays instead of squishing the steps. */
+  position: fixed;
+  top: 105px;
+  right: 0;
+  width: 420px;
+  max-width: 90vw;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  z-index: 20;
+  border: 1px solid #33333c;
+  border-right: none;
+  border-radius: 10px 0 0 10px;
+  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.5);
   background: #1b1b20;
   padding: 1rem 1.25rem;
 }
