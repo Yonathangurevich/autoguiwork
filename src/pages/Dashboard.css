@@ -66,4 +66,5 @@
   flex: 1;
   display: flex;
   min-height: 0;
+  overflow: hidden; /* children (.steps) scroll internally; body stays fixed */
 }

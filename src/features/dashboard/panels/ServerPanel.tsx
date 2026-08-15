@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { exposeAsServer, unexposeServer } from "../../api";
-import type { App, InputSpec, Trigger } from "../../types/automation";
+import { exposeAsServer, unexposeServer, buildCurl } from "../../../services";
+import type { App, InputSpec, Trigger } from "../../../models";
 import "./ServerPanel.css";
 
 // Derive the input list an automation already declares (from a Server trigger).
@@ -12,23 +12,6 @@ function existingInputs(trigger: Trigger): InputSpec[] {
 
 function isExposed(trigger: Trigger): boolean {
   return typeof trigger === "object" && "Server" in trigger;
-}
-
-// Build a ready-to-run curl for this endpoint. The JSON body has one key per
-// declared input, with a <name> placeholder value the user replaces.
-//
-// Windows-friendly: a SINGLE line (cmd.exe has no \-line-continuation) with the
-// -d body in double quotes and inner quotes escaped as \" (bash single-quote
-// style doesn't work in cmd/PowerShell). This pastes cleanly into cmd.
-function buildCurl(url: string, inputs: InputSpec[]): string {
-  const named = inputs.filter((i) => i.name.trim() !== "");
-  const body =
-    named.length === 0
-      ? "{}"
-      : "{" +
-        named.map((i) => `\\"${i.name}\\": \\"<${i.name}>\\"`).join(", ") +
-        "}";
-  return `curl -X POST ${url} -H "Content-Type: application/json" -d "${body}"`;
 }
 
 interface Props {

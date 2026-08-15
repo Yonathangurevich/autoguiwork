@@ -1,15 +1,15 @@
-import type { ActionsKind } from "../../types/automation";
-import "./ActionPalette.css";
+// The catalog of actions the palette offers: a display label + a factory that
+// produces a fresh ActionsKind with sensible defaults. Kept out of the UI so
+// the action set lives in one obvious place.
 
-// Each palette entry is a label + a factory that produces a fresh ActionsKind
-// with sensible defaults. Picking one appends it as a step; the step's fields
-// get edited in the canvas afterwards.
-interface PaletteItem {
+import type { ActionsKind } from "../models";
+
+export interface ActionTemplate {
   label: string;
   make: () => ActionsKind;
 }
 
-const ITEMS: PaletteItem[] = [
+export const ACTION_TEMPLATES: ActionTemplate[] = [
   {
     label: "Find image",
     make: () => ({
@@ -45,16 +45,3 @@ const ITEMS: PaletteItem[] = [
     }),
   },
 ];
-
-export function ActionPalette({ onPick }: { onPick: (a: ActionsKind) => void }) {
-  return (
-    <nav className="palette">
-      <h3 className="palette-title">actions</h3>
-      {ITEMS.map((item) => (
-        <button key={item.label} className="palette-item" onClick={() => onPick(item.make())}>
-          {item.label}
-        </button>
-      ))}
-    </nav>
-  );
-}

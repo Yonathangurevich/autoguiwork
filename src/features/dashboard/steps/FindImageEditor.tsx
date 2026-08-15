@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { saveImage, readImage } from "../../api";
+import { saveImage, readImage } from "../../../services";
 import "./FindImageEditor.css";
 
 // The value shape of a FindImageLoop action.

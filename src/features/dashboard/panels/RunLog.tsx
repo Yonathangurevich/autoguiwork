@@ -1,4 +1,4 @@
-import type { RunReport, ActionStatus, RunOutcome } from "../../types/automation";
+import type { RunReport, ActionStatus, RunOutcome } from "../../../models";
 import "./RunLog.css";
 
 function statusLabel(s: ActionStatus): { text: string; cls: string } {

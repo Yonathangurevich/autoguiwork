@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { automationRuns } from "../../api";
-import type { RunRecord, ActionStatus, RunOutcome } from "../../types/automation";
+import { automationRuns } from "../../../services";
+import type { RunRecord, ActionStatus, RunOutcome } from "../../../models";
 import "./RunsPanel.css";
 
 function statusText(s: ActionStatus): { text: string; cls: string } {

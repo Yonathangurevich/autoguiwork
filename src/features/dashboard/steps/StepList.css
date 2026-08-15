@@ -1,10 +1,12 @@
 .steps {
   flex: 1;
+  min-height: 0; /* let this flex child actually scroll instead of growing */
   padding: 1.5rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+  align-items: flex-start; /* steps take their natural width, not stretched */
 }
 
 .steps-empty {
@@ -12,10 +14,12 @@
 }
 
 .step {
+  width: 100%;
+  max-width: 520px;
+  flex-shrink: 0; /* THE fix: never compress a step to fit — overflow scrolls */
   background: #23232a;
   border: 1px solid #33333c;
   border-radius: 10px;
-  max-width: 480px;
   overflow: hidden;
 }
 
@@ -23,9 +27,9 @@
   border-color: #5b7cfa;
 }
 
-.step.drag-over {
+.step.dragging {
   border-color: #5b7cfa;
-  border-top: 2px solid #5b7cfa;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
 .step-head {

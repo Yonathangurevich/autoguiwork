@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { listAutomations, createAutomation } from "../api";
+import { listAutomations, createAutomation } from "../services";
 import "./Home.css";
 
 export function Home() {

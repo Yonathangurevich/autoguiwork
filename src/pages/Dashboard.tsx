@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { loadAutomation, saveAutomation, runAutomation } from "../api";
-import type { App, ActionsKind, RunReport } from "../types/automation";
-import { ActionPalette } from "../components/dashboard/ActionPalette";
-import { StepList } from "../components/dashboard/StepList";
-import { RunLog } from "../components/dashboard/RunLog";
-import { ServerPanel } from "../components/dashboard/ServerPanel";
-import { RunsPanel } from "../components/dashboard/RunsPanel";
+import { loadAutomation, saveAutomation, runAutomation } from "../services";
+import type { App, ActionsKind, RunReport } from "../models";
+import { ActionPalette } from "../features/dashboard/palette/ActionPalette";
+import { StepList } from "../features/dashboard/steps/StepList";
+import { RunLog } from "../features/dashboard/panels/RunLog";
+import { ServerPanel } from "../features/dashboard/panels/ServerPanel";
+import { RunsPanel } from "../features/dashboard/panels/RunsPanel";
 import "./Dashboard.css";
 
 export function Dashboard() {

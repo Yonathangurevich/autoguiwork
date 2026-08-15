@@ -5,7 +5,7 @@ import type {
   OpenApps,
   TextArg,
   Key,
-} from "../../types/automation";
+} from "../../../models";
 import { FindImageEditor } from "./FindImageEditor";
 import "./StepEditor.css";
 
