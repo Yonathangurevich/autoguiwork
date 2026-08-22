@@ -5,3 +5,4 @@ export * from "./action";
 export * from "./trigger";
 export * from "./run";
 export * from "./app";
+export * from "./canvas";

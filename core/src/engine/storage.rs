@@ -41,6 +41,63 @@ pub fn load_app(app_name: &str) -> Result<App, EngineErrorKind> {
     App::load(app_json_path(app_name)?)
 }
 
+// --- canvas layout (UI only) ----------------------------------------------
+//
+// The visual editor stores node positions and parked (unconnected) nodes here.
+// The ENGINE NEVER READS THIS: automation.json still holds only the connected
+// chain as actions[], exactly as before. This file is pure UI memory, kept as
+// an opaque JSON value so the frontend can change its shape without touching
+// Rust.
+
+/// The canvas.json file for one automation (UI layout, not engine data).
+pub fn canvas_json_path(app_name: &str) -> Result<PathBuf, EngineErrorKind> {
+    Ok(app_dir(app_name)?.join("canvas.json"))
+}
+
+/// Save the UI's canvas layout verbatim. Creates apps/<name>/ if needed.
+pub fn save_canvas(
+    app_name: &str,
+    layout: &serde_json::Value,
+) -> Result<(), EngineErrorKind> {
+    let dir = app_dir(app_name)?;
+    fs::create_dir_all(&dir).map_err(|source| EngineErrorKind::AppFileIo {
+        path: dir.to_string_lossy().to_string(),
+        source,
+    })?;
+
+    let path = canvas_json_path(app_name)?;
+    let json = serde_json::to_string_pretty(layout).map_err(|source| {
+        EngineErrorKind::AppFileParse {
+            path: path.to_string_lossy().to_string(),
+            source,
+        }
+    })?;
+    fs::write(&path, json).map_err(|source| EngineErrorKind::AppFileIo {
+        path: path.to_string_lossy().to_string(),
+        source,
+    })
+}
+
+/// Load the canvas layout. Returns None when the automation has never been
+/// opened in the visual editor (the UI then lays the chain out by default).
+pub fn load_canvas(app_name: &str) -> Result<Option<serde_json::Value>, EngineErrorKind> {
+    let path = canvas_json_path(app_name)?;
+    if !path.exists() {
+        return Ok(None);
+    }
+    let text = fs::read_to_string(&path).map_err(|source| EngineErrorKind::AppFileIo {
+        path: path.to_string_lossy().to_string(),
+        source,
+    })?;
+    let value = serde_json::from_str(&text).map_err(|source| {
+        EngineErrorKind::AppFileParse {
+            path: path.to_string_lossy().to_string(),
+            source,
+        }
+    })?;
+    Ok(Some(value))
+}
+
 /// Save an automation to its folder (creating apps/<name>/ if needed).
 /// The UI calls this on every meaningful edit — the JSON is the source of truth.
 pub fn save_app(app: &App) -> Result<(), EngineErrorKind> {

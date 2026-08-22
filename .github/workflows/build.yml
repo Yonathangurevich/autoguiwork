@@ -1,0 +1,82 @@
+name: Build Windows app
+
+# Two ways to trigger:
+#  1. Push a version tag (v0.1.0, v0.2.0 ...) -> builds AND publishes a GitHub
+#     Release with the .exe / .msi installers attached, ready to download.
+#  2. "Run workflow" button in the Actions tab (workflow_dispatch) -> builds and
+#     uploads the installers as a downloadable artifact, without making a release.
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+# tauri-action needs write access to create the release + upload assets.
+permissions:
+  contents: write
+
+jobs:
+  build:
+    # Windows runner, since this app is Windows-only (rustautogui + windows crate).
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # --- toolchains -----------------------------------------------------
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      # Cache cargo deps so later builds are much faster. The key includes the
+      # lockfile hash, so it only re-downloads when dependencies change.
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-
+
+      # --- build ----------------------------------------------------------
+      - name: Install frontend dependencies
+        run: npm ci
+
+      # tauri-action runs the frontend build (beforeBuildCommand in
+      # tauri.conf.json) and then `tauri build`, producing the NSIS .exe and
+      # the .msi. On a tag push it also creates the Release and uploads them.
+      - name: Build the app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Where the Tauri crate lives in this workspace.
+          projectPath: .
+          tauriScript: npm run tauri --
+          # Only used for tag pushes; ignored on manual runs.
+          tagName: ${{ github.ref_name }}
+          releaseName: "autoguiwork ${{ github.ref_name }}"
+          releaseBody: "Download the installer below (.exe or .msi)."
+          releaseDraft: false
+          prerelease: false
+
+      # On manual runs there's no release, so publish the installers as an
+      # artifact you can download from the workflow run page.
+      - name: Upload installers as artifact
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: autoguiwork-windows
+          # NOTE: this is a Cargo WORKSPACE, so build output lands in the
+          # workspace-root target/, not src-tauri/target/.
+          path: |
+            target/release/bundle/nsis/*.exe
+            target/release/bundle/msi/*.msi
+          if-no-files-found: warn

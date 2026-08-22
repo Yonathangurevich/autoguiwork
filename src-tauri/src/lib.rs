@@ -17,6 +17,8 @@ pub fn run() {
             commands::expose_as_server,
             commands::unexpose_server,
             commands::automation_runs,
+            commands::save_canvas_layout,
+            commands::load_canvas_layout,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

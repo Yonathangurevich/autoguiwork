@@ -7,3 +7,5 @@ export * from "./imageApi";
 export * from "./serverApi";
 export * from "./actionFactory";
 export * from "./actionLabels";
+export * from "./canvasApi";
+export * from "./chainService";

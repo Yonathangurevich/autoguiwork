@@ -11,7 +11,8 @@ use autoguiwork::engine::context::Context;
 use autoguiwork::engine::report::RunReport;
 use autoguiwork::engine::server::serve_in_background;
 use autoguiwork::engine::storage::{
-    RunRecord, app_dir, list_apps, list_runs, load_app, save_app, save_step_image,
+    RunRecord, app_dir, list_apps, list_runs, load_app, load_canvas, save_app, save_canvas,
+    save_step_image,
 };
 use autoguiwork::engine::trigger::{InputSpec, Trigger, generate_endpoint_id};
 use autoguiwork::tools::cancel_watcher::spawn_escape_watcher;
@@ -172,4 +173,19 @@ pub fn unexpose_server(name: String) -> Result<(), String> {
 #[tauri::command]
 pub fn automation_runs(name: String) -> Result<Vec<RunRecord>, String> {
     list_runs(&name, 50).map_err(|e| e.to_string())
+}
+
+// --- canvas layout (UI only; the engine never reads it) --------------------
+
+/// Save the visual editor's layout (node positions + parked nodes).
+/// Opaque JSON: the backend stores it verbatim and never interprets it.
+#[tauri::command]
+pub fn save_canvas_layout(name: String, layout: serde_json::Value) -> Result<(), String> {
+    save_canvas(&name, &layout).map_err(|e| e.to_string())
+}
+
+/// Load the canvas layout, or null if this automation has no saved layout yet.
+#[tauri::command]
+pub fn load_canvas_layout(name: String) -> Result<Option<serde_json::Value>, String> {
+    load_canvas(&name).map_err(|e| e.to_string())
 }

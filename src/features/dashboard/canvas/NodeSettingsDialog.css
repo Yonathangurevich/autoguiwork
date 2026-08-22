@@ -1,0 +1,71 @@
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.dialog {
+  width: 440px;
+  max-width: 92vw;
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  background: #1b1b20;
+  border: 1px solid #33333c;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #2a2a33;
+}
+
+.dialog-title {
+  font-weight: 600;
+}
+
+.dialog-close {
+  background: none;
+  border: none;
+  color: #9a9aa2;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.dialog-close:hover {
+  color: #e8e8ea;
+}
+
+.dialog-body {
+  padding: 0.4rem 1rem 1rem;
+  overflow-y: auto;
+}
+
+.dialog-foot {
+  padding: 0.7rem 1rem;
+  border-top: 1px solid #2a2a33;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dialog-done {
+  padding: 0.45rem 1.1rem;
+  background: #5b7cfa;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+.dialog-done:hover {
+  background: #4a6bf0;
+}

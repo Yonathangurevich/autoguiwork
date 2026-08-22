@@ -1,0 +1,130 @@
+.canvas-wrap {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+}
+
+/* React Flow surface */
+.react-flow {
+  background: #131317;
+}
+.react-flow__background {
+  color: #2a2a33;
+}
+.react-flow__controls button {
+  background: #23232a;
+  border-bottom: 1px solid #33333c;
+  color: #e8e8ea;
+  fill: #e8e8ea;
+}
+.react-flow__controls button:hover {
+  background: #2f2f39;
+}
+
+/* wires */
+.react-flow__edge-path {
+  stroke: #5b7cfa;
+  stroke-width: 2;
+}
+.react-flow__connectionline path {
+  stroke: #5b7cfa;
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
+}
+
+/* --- nodes --------------------------------------------------------------- */
+
+.node {
+  width: 210px;
+  background: #23232a;
+  border: 1px solid #33333c;
+  border-radius: 10px;
+  padding: 0.6rem 0.7rem;
+  color: #e8e8ea;
+  font-size: 0.85rem;
+}
+
+.node.selected {
+  border-color: #5b7cfa;
+  box-shadow: 0 0 0 1px #5b7cfa;
+}
+
+/* A parked (unconnected) node is dimmed: it is NOT part of the automation. */
+.node.parked {
+  border-style: dashed;
+  opacity: 0.75;
+}
+
+.start-node {
+  width: 150px;
+  background: #1e3a26;
+  border-color: #2f7d4f;
+  text-align: center;
+}
+
+.node-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.node-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: #5b7cfa;
+  color: #fff;
+  font-size: 0.72rem;
+  flex-shrink: 0;
+}
+.node.parked .node-index {
+  background: #4a4a55;
+}
+
+.node-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.node-remove {
+  background: none;
+  border: none;
+  color: #9a9aa2;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.node-remove:hover {
+  color: #ff6b6b;
+}
+
+.node-settings {
+  margin-top: 0.5rem;
+  width: 100%;
+  padding: 0.3rem;
+  background: #2a2a33;
+  color: #c9c9d1;
+  border: 1px solid #3a3a44;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+}
+.node-settings:hover {
+  border-color: #5b7cfa;
+  color: #e8e8ea;
+}
+
+/* connection points */
+.node-handle {
+  width: 9px;
+  height: 9px;
+  background: #5b7cfa;
+  border: 2px solid #16161a;
+}
